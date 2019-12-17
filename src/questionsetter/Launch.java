@@ -19,6 +19,8 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 //import static questionsetter.Examlogin.blockWindowsKey;
 
+import org.apache.log4j.PropertyConfigurator;
+
 /**
  *
  * @author desk
@@ -150,8 +152,7 @@ public class Launch extends javax.swing.JFrame {
         Statement statement2 = null;
         ResultSet rs2 = null;
  
-        // Step 1: Loading or 
-        // registering Oracle JDBC driver class
+        // Step 1: Loading or registering MS Access JDBC driver class
         try {
  
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
@@ -204,6 +205,8 @@ public class Launch extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+    	String desk=System.getProperty("user.home");
+        PropertyConfigurator.configure(desk+"\\Desktop\\log4j2.properties");
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -217,12 +220,16 @@ public class Launch extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
+        	System.out.println(ex);
             java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
+        	System.out.println(ex);
             java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
+        	System.out.println(ex);
             java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        	System.out.println(ex);
             java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>

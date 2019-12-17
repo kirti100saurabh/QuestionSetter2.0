@@ -8,6 +8,7 @@ package questionsetter;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import static java.lang.System.exit;
 import java.net.MalformedURLException;
@@ -31,12 +32,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 /**
  *
  * @author Kumar
  */
 public class Examlogin extends javax.swing.JFrame {
-
+	
+	final static Logger logger = Logger.getLogger(Logger.class.getName());
     /**
      * Creates new form examlogin
      */
@@ -61,8 +65,9 @@ public class Examlogin extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
             if(netIsAvailable()==true){
-                       JOptionPane.showMessageDialog(this,"Please Disconnect the Internet Connection and Re-Open the Software");  
-                      exit(0);
+            	logger.error("found internet is conected");
+                JOptionPane.showMessageDialog(this,"Please Disconnect the Internet Connection and Re-Open the Software");  
+                 exit(0);
                 }
               else{  
         jPanel1 = new javax.swing.JPanel();
@@ -72,7 +77,8 @@ public class Examlogin extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jPasswordField1 = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        loginButton = new javax.swing.JButton();
+        forgetPasswordButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -120,17 +126,31 @@ public class Examlogin extends javax.swing.JFrame {
         jLabel3.setIconTextGap(8);
         jLabel3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
-        jButton1.setBackground(new java.awt.Color(153, 255, 102));
-        jButton1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
-        jButton1.setText("Login");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        loginButton.setBackground(new java.awt.Color(153, 255, 102));
+        loginButton.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        loginButton.setText("Login");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 
               
                
-                    jButton1ActionPerformed(evt);
+                    loginButtonActionPerformed(evt);
                 
             }
+
+           
+        });
+        
+        forgetPasswordButton.setBackground(new java.awt.Color(179, 0, 0));
+        forgetPasswordButton.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        forgetPasswordButton.setText("Forget Password or Username ?");
+        forgetPasswordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	
+            	forgetPasswordButtonActionPerformed(evt);
+            }
+
+			
 
            
         });
@@ -168,7 +188,11 @@ public class Examlogin extends javax.swing.JFrame {
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(363, 363, 363)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(366, 366, 366))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(363, 363, 363)
+                .addComponent(forgetPasswordButton, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addGap(366, 366, 366))
         );
         jPanel3Layout.setVerticalGroup(
@@ -185,8 +209,11 @@ public class Examlogin extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60)
-                .addComponent(jButton1)
+                .addGap(30, 30, 30)
+                .addComponent(loginButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(20, 20, 20)
+                .addComponent(forgetPasswordButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6))
@@ -243,7 +270,7 @@ public class Examlogin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)  {//GEN-FIRST:event_jButton1ActionPerformed
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt)  {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         
           String userid,password;
@@ -324,11 +351,42 @@ public class Examlogin extends javax.swing.JFrame {
                     }
                 }
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+    private void forgetPasswordButtonActionPerformed(ActionEvent evt) {
+    	JOptionPane.showMessageDialog(rootPane,"Previous login data will be deleted and\n you have to register again");
+    	Connection connection = null;
+        Statement statement = null;
+       
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+        }
+        catch(ClassNotFoundException cnfex) {
+            ClassNotFoundException err = cnfex;
+            JOptionPane.showMessageDialog(rootPane,"Problem in loading or registering MS Access JDBC driver\n"+err);                   
+        }
+        try 
+        {
+             String dbURL = "jdbc:ucanaccess://"+ msAccDB;             
+             connection = DriverManager.getConnection(dbURL); 
+             String queryco = "delete * from Login";
+             statement = connection.createStatement();
+             statement.executeUpdate(queryco);          
+             connection.close();
+        }
+        catch(SQLException sqlex){
+            SQLException err = sqlex;
+            JOptionPane.showMessageDialog(rootPane,"Problem in Forgating password/username!\n"+err);
+        }
+        Register reg=new Register();
+        reg.setVisible(true);
+        this.setVisible(false);	
+	}
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+    	String desk=System.getProperty("user.home");
+        PropertyConfigurator.configure(desk+"\\Desktop\\log4j2.properties");
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -364,7 +422,8 @@ public class Examlogin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton loginButton;
+    private javax.swing.JButton forgetPasswordButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -384,6 +443,7 @@ private static boolean netIsAvailable() {
         final URLConnection conn = url.openConnection();
         conn.connect();
         conn.getInputStream().close();
+        //        return false;
         return true;
     } catch (MalformedURLException e) {
         throw new RuntimeException(e);

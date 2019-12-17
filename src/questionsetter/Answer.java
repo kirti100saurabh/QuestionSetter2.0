@@ -586,7 +586,8 @@ public class Answer extends javax.swing.JFrame {
         final URLConnection conn = url.openConnection();
         conn.connect();
         conn.getInputStream().close();
-        return true;
+//        return true;
+        return false;
     } catch (MalformedURLException e) {
         throw new RuntimeException(e);
     } catch (IOException e) {

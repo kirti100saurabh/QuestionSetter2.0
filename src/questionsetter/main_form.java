@@ -2825,7 +2825,8 @@ String sett=null;
         final URLConnection conn = url.openConnection();
         conn.connect();
         conn.getInputStream().close();
-        return true;
+        return false;
+   //     return true;
     } catch (MalformedURLException e) {
         throw new RuntimeException(e);
     } catch (IOException e) {

@@ -80,7 +80,7 @@ public class Register extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        jPasswordField1 = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
@@ -127,8 +127,8 @@ public class Register extends javax.swing.JFrame {
 
         jTextField2.setFont(jTextField2.getFont().deriveFont(jTextField2.getFont().getStyle() | java.awt.Font.BOLD, 15));
 
-        jTextField3.setFont(jTextField3.getFont().deriveFont(jTextField3.getFont().getStyle() | java.awt.Font.BOLD, 15));
-        jTextField3.addActionListener((java.awt.event.ActionEvent evt) -> {
+        jPasswordField1.setFont(jPasswordField1.getFont().deriveFont(jPasswordField1.getFont().getStyle() | java.awt.Font.BOLD, 15));
+        jPasswordField1.addActionListener((java.awt.event.ActionEvent evt) -> {
             jTextField3ActionPerformed(evt);
         });
 
@@ -167,7 +167,7 @@ public class Register extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextField1)
                             .addComponent(jTextField2)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)))
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -192,7 +192,7 @@ public class Register extends javax.swing.JFrame {
                 .addGap(43, 43, 43)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -263,7 +263,7 @@ public class Register extends javax.swing.JFrame {
              String name, userid,pass;
              name=jTextField1.getText();
              userid=jTextField2.getText();
-             pass=jTextField3.getText();
+             pass=jPasswordField1.getText();
              
         Connection connection = null;
         Statement statement = null;
@@ -322,7 +322,7 @@ public class Register extends javax.swing.JFrame {
        
        jTextField1.setText("");
        jTextField2.setText("");
-       jTextField3.setText("");
+       jPasswordField1.setText("");
     }                                        
 
     /**
@@ -376,7 +376,7 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JPasswordField jPasswordField1;
     String msAccDB = "lib/DB/login.accdb";
     // End of variables declaration  
     
@@ -386,7 +386,8 @@ public class Register extends javax.swing.JFrame {
         final URLConnection conn = url.openConnection();
         conn.connect();
         conn.getInputStream().close();
-        return true;
+        return false;
+ //       return true;
     } catch (MalformedURLException e) {
         throw new RuntimeException(e);
     } catch (IOException e) {
