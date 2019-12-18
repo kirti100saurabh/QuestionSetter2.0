@@ -5,19 +5,29 @@
  */
 package questionsetter;
 
+import static java.lang.System.exit;
+
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import static java.lang.System.exit;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 import javax.swing.JOptionPane;
+
+import org.apache.log4j.Logger;
+
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef.HMODULE;
@@ -27,13 +37,6 @@ import com.sun.jna.platform.win32.WinUser.HHOOK;
 import com.sun.jna.platform.win32.WinUser.KBDLLHOOKSTRUCT;
 import com.sun.jna.platform.win32.WinUser.LowLevelKeyboardProc;
 import com.sun.jna.platform.win32.WinUser.MSG;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 /**
  *
  * @author Kumar
@@ -271,122 +274,130 @@ public class Examlogin extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt)  {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        
-          String userid,password;
-                
-                userid=jTextField1.getText();
-                password=jPasswordField1.getText();
-                
-                if(netIsAvailable()==true){
-                    JOptionPane.showMessageDialog(rootPane, "Please Disconnect the Internet Connection!");
-                }
-                else{
-                    if(userid.equals("")){
-                    JOptionPane.showMessageDialog(rootPane, "User ID Cannot be Blank!");
-                    }
-                    if(password.equals("")){
-                    JOptionPane.showMessageDialog(rootPane, "Password Cannot be Blank!");
-                    }
-                    else{
-                        String oid=null,opass=null;
-                        
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet rs = null;
- 
-        // Step 1: Loading or 
-        // registering Oracle JDBC driver class
-        try {
- 
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        }
-        catch(ClassNotFoundException cnfex) {
-            ClassNotFoundException err = cnfex;
-            JOptionPane.showMessageDialog(rootPane,"Problem in loading or registering MS Access JDBC driver\n"+err);                   
-        }
- 
-        // Step 2: Opening database connection
-        try {
- 
-            
-            String dbURL = "jdbc:ucanaccess://"+ msAccDB;             
-            
-            //connection.setAutoCommit(false);
-            
-            // Step 2.A: Create and 
-            // get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL); 
- 
-            // Step 2.B: Creating JDBC Statement 
-            statement = connection.createStatement();
- 
-            rs=statement.executeQuery("select * from Login");           
-           
+    	// TODO add your handling code here:
 
-            while(rs.next()){    
-                oid=rs.getString("Setter_ID");
-                opass=rs.getString("Password"); 
-            }
-            connection.close();
-        }
-        catch(SQLException sqlex){
-            SQLException err = sqlex;
-            JOptionPane.showMessageDialog(rootPane,"Problem in Fetching Data!\n"+err);
-        }
-                        if(userid.equals(oid) && password.equals(opass)){                            
-                            JOptionPane.showMessageDialog(rootPane,"Welcome! "+userid+" Login Successful! Click Ok to Enter!");                           				
-                                                           
-                            MainForm nm=new MainForm();
-                            
-//                            ?setterid= jTextField1.getText();
-                              nm.setVisible(true);  
-                              
-                                this.setVisible(false);
-                               
-                        }
-                        else{
-                            JOptionPane.showMessageDialog(rootPane,"Invalid UserID or Password!");			
-                        }
-                    }
-                }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    	String userid,password;
+
+    	userid=jTextField1.getText();
+    	password=jPasswordField1.getText();
+    	logger.info("setter entered userid "+userid+ " and password"+password);
+    	if(netIsAvailable()==true){
+    		logger.error("found internet is conected");
+    		JOptionPane.showMessageDialog(rootPane, "Please Disconnect the Internet Connection!");
+    	}
+    	else{
+    		if(userid.equals("")){
+    			logger.info("setter leave userid blank!");	
+    			JOptionPane.showMessageDialog(rootPane, "User ID Cannot be Blank!");
+    		}
+    		if(password.equals("")){
+    			logger.info("setter leave password blank!");	
+    			JOptionPane.showMessageDialog(rootPane, "Password Cannot be Blank!");
+    		}
+    		else{
+    			String setterUserName=null,setterPassword=null;
+
+    			Connection connection = null;
+    			Statement statement = null;
+    			ResultSet rs = null;
+
+    			// Step 1: Loading or 
+    			// registering Oracle JDBC driver class
+    			try {
+
+    				Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+    			}
+    			catch(ClassNotFoundException cnfex) {
+    				logger.error("Problem in loading or registering MS Access JDBC driver\n"+cnfex);
+    				JOptionPane.showMessageDialog(rootPane,"Problem in loading or registering MS Access JDBC driver\n"+cnfex);                   
+    			}
+
+    			// Step 2: Opening database connection
+    			try {
+
+
+    				String dbURL = "jdbc:ucanaccess://"+ msAccDB;             
+
+    				//connection.setAutoCommit(false);
+
+    				// Step 2.A: Create and 
+    				// get connection using DriverManager class
+    				connection = DriverManager.getConnection(dbURL); 
+
+    				// Step 2.B: Creating JDBC Statement 
+    				statement = connection.createStatement();
+    				logger.info("executing....select * from Login");
+    				rs=statement.executeQuery("select * from Login");           
+
+
+    				while(rs.next()){    
+    					setterUserName=rs.getString("Setter_ID");
+    					setterPassword=rs.getString("Password"); 
+    					logger.info("setterUserName: "+setterUserName+"setterPassword: "+setterPassword);
+    				}
+    				connection.close();
+    			}
+    			catch(SQLException sqlex){
+    				logger.error("Problem in Fetching Data!\n"+sqlex);
+    				JOptionPane.showMessageDialog(rootPane,"Problem in Fetching Data!\n"+sqlex);
+    			}
+    			if(userid.equals(setterUserName) && password.equals(setterPassword))
+    			{ 
+    				JOptionPane.showMessageDialog(rootPane,"Welcome! "+userid+" Login Successful! Click Ok to Enter!");
+    				logger.info("Showing message.....Welcome! "+userid+" Login Successful! Click Ok to Enter!");
+    				logger.info("calling MainForm()");
+    				MainForm nm=new MainForm();
+    				nm.setVisible(true);  
+    				this.setVisible(false);
+
+    			}
+    			else{
+    				logger.error("Invalid UserID or Password!");
+    				JOptionPane.showMessageDialog(rootPane,"Invalid UserID or Password!");
+
+    			}
+    		}
+    	}
+    }
     
     private void forgetPasswordButtonActionPerformed(ActionEvent evt) {
+    	logger.info("pressed forgetPassword Button..!");
     	JOptionPane.showMessageDialog(rootPane,"Previous login data will be deleted and\n you have to register again");
     	Connection connection = null;
-        Statement statement = null;
-       
-        try {
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        }
-        catch(ClassNotFoundException cnfex) {
-            ClassNotFoundException err = cnfex;
-            JOptionPane.showMessageDialog(rootPane,"Problem in loading or registering MS Access JDBC driver\n"+err);                   
-        }
-        try 
-        {
-             String dbURL = "jdbc:ucanaccess://"+ msAccDB;             
-             connection = DriverManager.getConnection(dbURL); 
-             String queryco = "delete * from Login";
-             statement = connection.createStatement();
-             statement.executeUpdate(queryco);          
-             connection.close();
-        }
-        catch(SQLException sqlex){
-            SQLException err = sqlex;
-            JOptionPane.showMessageDialog(rootPane,"Problem in Forgating password/username!\n"+err);
-        }
-        Register reg=new Register();
-        reg.setVisible(true);
-        this.setVisible(false);	
-	}
+    	Statement statement = null;
+
+    	try {
+    		Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+    	}
+    	catch(ClassNotFoundException cnfex) {
+    		logger.error("Problem in loading or registering MS Access JDBC driver\n"+cnfex);
+    		JOptionPane.showMessageDialog(rootPane,"Problem in loading or registering MS Access JDBC driver\n"+cnfex);                   
+    	}
+    	try 
+    	{
+    		String dbURL = "jdbc:ucanaccess://"+ msAccDB;             
+    		connection = DriverManager.getConnection(dbURL);
+    		logger.info("executing...delete * from Login");
+    		String queryco = "delete * from Login";
+    		logger.info(queryco);
+    		statement = connection.createStatement();
+    		statement.executeUpdate(queryco);          
+    		connection.close();
+    	}
+    	catch(SQLException sqlex){
+    		logger.error("Problem in Forgating password/username!\n"+sqlex);
+    		JOptionPane.showMessageDialog(rootPane,"Problem in Forgating password/username!\n"+sqlex);
+    	}
+    	logger.info("calling.... Register()");
+    	Register reg=new Register();
+    	reg.setVisible(true);
+    	this.setVisible(false);	
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-    	String desk=System.getProperty("user.home");
-        PropertyConfigurator.configure(desk+"\\Desktop\\log4j2.properties");
+    	
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -439,12 +450,13 @@ public class Examlogin extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 private static boolean netIsAvailable() {
     try {
+    	
         final URL url = new URL("http://www.google.com");
         final URLConnection conn = url.openConnection();
         conn.connect();
         conn.getInputStream().close();
-        //        return false;
-        return true;
+        return false;
+//       return true;
     } catch (MalformedURLException e) {
         throw new RuntimeException(e);
     } catch (IOException e) {

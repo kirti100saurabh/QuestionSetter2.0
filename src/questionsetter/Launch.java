@@ -19,6 +19,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 //import static questionsetter.Examlogin.blockWindowsKey;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -26,7 +27,7 @@ import org.apache.log4j.PropertyConfigurator;
  * @author desk
  */
 public class Launch extends javax.swing.JFrame {
-
+	final static Logger logger = Logger.getLogger(Logger.class.getName());
     /**
      * Creates new form launch2
      */
@@ -88,7 +89,7 @@ public class Launch extends javax.swing.JFrame {
         jButton2.setText("Proceed to Question Setter Portal");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                proceedButtonActionPerformed(evt);
             }
         });
 
@@ -146,8 +147,9 @@ public class Launch extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void proceedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+    	logger.info("pressed proceed button..");
         Connection connection2 = null;
         Statement statement2 = null;
         ResultSet rs2 = null;
@@ -158,6 +160,7 @@ public class Launch extends javax.swing.JFrame {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
         }
         catch(ClassNotFoundException cnfex) {
+        	logger.error("Error in Driver Connection" +cnfex);
             ClassNotFoundException err = cnfex;
             JOptionPane.showMessageDialog(this,"Error in Driver Connection"+err);
         }
@@ -176,18 +179,21 @@ public class Launch extends javax.swing.JFrame {
  
             // Step 2.B: Creating JDBC Statement 
             statement2 = connection2.createStatement();
- 
+            logger.info("executing...select count(*) AS rowcount from Login ");
             rs2=statement2.executeQuery("select count(*) AS rowcount from Login");         
             rs2.next();
             int count=rs2.getInt("rowcount");
+            logger.info("Query reuslt: "+count);
             rs2.close();
             
-            if(count==1){            
+            if(count==1){ 
+            	logger.info("calling Examlogin() ");
             Examlogin ex=new Examlogin();  
             ex.setVisible(true);
             this.setVisible(false);
             } 
-            else{          
+            else{ 
+            	logger.info("calling Register() ");
                  Register reg=new Register();
                  reg.setVisible(true);
                  this.setVisible(false);
@@ -195,9 +201,8 @@ public class Launch extends javax.swing.JFrame {
             connection2.close();
         }
         catch(SQLException sqlex){
-            SQLException err = sqlex;
-           JOptionPane.showMessageDialog(this,"Error in Database Connection"+err);
-           
+        	logger.info("Error in Database Connection"+sqlex);
+           JOptionPane.showMessageDialog(this,"Error in Database Connection"+sqlex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -207,6 +212,8 @@ public class Launch extends javax.swing.JFrame {
     public static void main(String args[]) {
     	String desk=System.getProperty("user.home");
         PropertyConfigurator.configure(desk+"\\Desktop\\log4j2.properties");
+        final Logger logger = Logger.getLogger(Logger.class.getName());
+        logger.info("launching QuestionSetter module...!");
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -220,23 +227,24 @@ public class Launch extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-        	System.out.println(ex);
-            java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        	logger.error(ex);
+        	java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-        	System.out.println(ex);
-            java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        	logger.error(ex);
+        	java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-        	System.out.println(ex);
-            java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        	logger.error(ex);
+        	java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-        	System.out.println(ex);
-            java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        	logger.error(ex);
+        	java.util.logging.Logger.getLogger(Launch.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
+        	logger.info("called 0 arg constructor");
             new Launch().setVisible(true);
         });
     }
